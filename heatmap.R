@@ -35,10 +35,9 @@ p2 <- pxdf2 %>%
   dodata(., "Muualla kuin Suomessa syntyneet")
 
 p <- p1 + p2 + 
-  plot_annotation('Ikäryhmien koko', 
+  plot_annotation('Ikäryhmien koko vuosina 1990-2022', 
                   caption = "Tilastokeskus: Väestö syntymävaltion, iän ja sukupuolen mukaan, 1990-2022 | https://github.com/tts/finage",
                   theme = theme(plot.title = element_text(hjust = 0.5))) +
   plot_layout(ncol = 1, byrow = TRUE)
 
-p
-
+ggsave("finage.png", width = 20, height = 20, units = "cm")
