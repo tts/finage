@@ -20,6 +20,7 @@ dodata <- function(d, sub) {
               mapping = aes(x = Vuosi, y = `Ikä`, fill = Lkm)) +
     geom_tile() +
     scale_fill_viridis_c(option = "plasma") +
+    scale_y_continuous(breaks = seq(0, 100, by = 10)) +
     theme_minimal() +
     labs(subtitle = sub, x = NULL) 
   
@@ -34,7 +35,16 @@ p2 <- pxdf2 %>%
   filter(`Syntymävaltio` != "Suomi") %>% 
   dodata(., "Muualla kuin Suomessa syntyneet")
 
-p <- p1 + p2 + 
+p3 <- pxdf2 %>% 
+  mutate(`Ikä` = str_replace(`Ikä`, "-", "")) %>% 
+  group_by(Vuosi, `Ikä`) %>% 
+  mutate(Kaikki = sum(`Väestö 31.12.`)) %>% 
+  select(-`Väestö 31.12.`) %>% 
+  rename(`Väestö 31.12.` = Kaikki) %>% 
+  ungroup() %>% 
+  dodata(., "Kaikki")
+
+p <- p2 + p1 + p3 +
   plot_annotation('Ikäryhmien koko vuosina 1990-2022', 
                   caption = "Tilastokeskus: Väestö syntymävaltion, iän ja sukupuolen mukaan, 1990-2022 | https://github.com/tts/finage",
                   theme = theme(plot.title = element_text(hjust = 0.5))) +
